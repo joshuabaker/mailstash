@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/joshuabaker/git/mailstash status)",
+      "Bash(find /Users/joshuabaker/git/mailstash -type f -name \"*.json\" -o -name \"*.yaml\" -o -name \"*.yml\" 2>/dev/null | grep -v .git)",
+      "Bash(git -C /Users/joshuabaker/git/mailstash log --oneline 2>&1 | head -10)",
+      "Bash(node --version && pnpm --version)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm --filter @mailstash/cli exec tsx src/ingest.ts --account test --mbox test.mbox)",
+      "Bash(pnpm -r exec tsc --noEmit 2>&1)"
+    ]
+  }
+}

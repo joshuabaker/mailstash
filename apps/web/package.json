@@ -1,0 +1,23 @@
+{
+  "name": "@mailstash/web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "hono": "^4.7.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "wrangler": "^3.109.2",
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "esbuild": "^0.25.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4"
+  }
+}
