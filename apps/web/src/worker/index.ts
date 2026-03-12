@@ -37,8 +37,12 @@ const app = new Hono<{ Bindings: Bindings }>();
  *   2. access: true, accounts: 0  → show onboarding
  *   3. access: true, accounts: >0 → full app
  */
+function isDevMode(c: { env: { DEV_MODE?: string } }): boolean {
+  return c.env.DEV_MODE === "true";
+}
+
 app.get("/api/status", async (c) => {
-  const hasAccess = !!c.req.header("CF-Access-JWT-Assertion");
+  const hasAccess = isDevMode(c) || !!c.req.header("CF-Access-JWT-Assertion");
 
   if (!hasAccess) {
     return c.json({ access: false, accounts: 0 });
@@ -54,9 +58,11 @@ app.get("/api/status", async (c) => {
 
 /**
  * Block all other API routes if Access is not active.
+ * Skipped when DEV_MODE is explicitly set to "true".
  */
 app.use("/api/*", async (c, next) => {
   if (c.req.path === "/api/status") return next();
+  if (isDevMode(c)) return next();
 
   const jwt = c.req.header("CF-Access-JWT-Assertion");
   if (!jwt) {
