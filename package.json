@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently -n worker,vite -c blue,green \"pnpm --filter @mailstash/web dev:worker\" \"pnpm --filter @mailstash/web dev\"",
+    "dev": "sh dev.sh",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck"
   },

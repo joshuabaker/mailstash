@@ -1,6 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const workerPort = process.env.WORKER_PORT || "4555";
+const vitePort = parseInt(process.env.VITE_PORT || "4554", 10);
+
 export default defineConfig({
   plugins: [react()],
   root: ".",
@@ -9,10 +12,10 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    port: 4554,
+    port: vitePort,
     strictPort: false,
     proxy: {
-      "/api": "http://localhost:4555",
+      "/api": `http://localhost:${workerPort}`,
     },
   },
 });
