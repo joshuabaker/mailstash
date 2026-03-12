@@ -3,12 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter @mailstash/web dev",
-    "dev:worker": "pnpm --filter @mailstash/web dev:worker",
+    "dev": "concurrently -n worker,vite -c blue,green \"pnpm --filter @mailstash/web dev:worker\" \"pnpm --filter @mailstash/web dev\"",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "typescript": "^5.7.3"
   }
 }

@@ -69,8 +69,7 @@ Then open the app and import your first mbox file.
 
 ```sh
 pnpm install
-pnpm dev          # Frontend dev server
-pnpm dev:worker   # API dev server
+pnpm dev          # Starts both the API and frontend
 pnpm test         # Run tests
 pnpm typecheck    # Type-check
 ```
