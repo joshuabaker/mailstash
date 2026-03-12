@@ -65,6 +65,10 @@ Click the deploy button above to provision the app on your Cloudflare account. A
 
 Then open the app and import your first mbox file.
 
+## License
+
+[PolyForm Small Business 1.0.0](https://polyformproject.org/licenses/small-business/1.0.0/) — free for personal use and small businesses (fewer than 100 people and under $1M revenue). Larger companies: contact the author for a commercial license.
+
 ## Local development
 
 ```sh
