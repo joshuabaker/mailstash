@@ -24,7 +24,9 @@
       "Bash(pnpm typecheck:*)",
       "Bash(git add:*)",
       "Bash(git reset:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(pnpm dev:worker 2>&1)",
+      "WebFetch(domain:polyformproject.org)"
     ]
   }
 }
