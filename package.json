@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter @mailstash/web dev",
+    "dev:worker": "pnpm --filter @mailstash/web dev:worker",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck"
   },
