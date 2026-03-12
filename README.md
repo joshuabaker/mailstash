@@ -1,69 +1,69 @@
 # mailstash
 
-Personal email archive. Ingests Google Takeout mbox exports into Cloudflare (D1 + R2) and serves a read-only web viewer with full-text search.
-
-Built to decommission paid Google Workspace accounts while keeping searchable access to historical email.
-
-## Deploy
+Archive your Gmail and keep it searchable — without paying for Google Workspace.
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/joshuabaker/mailstash)
 
-This provisions a Worker, D1 database, and R2 bucket on your Cloudflare account. After deploy:
+## How it works
 
-1. **Run the migration** to create tables:
+Export your email from Google using [Google Takeout](https://takeout.google.com/) (select Gmail, choose `.mbox` format). Then open mailstash in your browser and pick the file.
+
+mailstash reads the file directly from your computer — even multi-gigabyte archives — and uploads everything to your own Cloudflare account. Your emails are stored privately in your account, not shared with any third party.
+
+The import is resumable. If you close the tab or lose your connection, just reopen the app and it picks up where it left off.
+
+Once imported, you get a searchable web interface: browse by thread, search by sender, date, keywords, or attachments.
+
+Requires Chrome or Edge.
+
+## Estimated cost
+
+mailstash runs on Cloudflare's infrastructure. Each component has a free tier, and you only pay if you exceed it.
+
+| Component | Free allowance | Paid rate above free tier |
+|---|---|---|
+| Workers (runs the app) | 100,000 requests/day | $5/month for 10M requests |
+| D1 (email metadata + search) | 5 GB storage | $0.75/GB/month beyond 5 GB |
+| R2 (email files + attachments) | 10 GB storage, no download fees | $0.015/GB/month beyond 10 GB |
+| Access (login protection) | Free for up to 50 users | — |
+
+**A small archive (under 5,000 emails, ~2 GB of files)** fits entirely within the free tier. You'd pay nothing beyond a Cloudflare account.
+
+**A larger archive (50,000 emails, ~20 GB of files)** would exceed the free R2 storage by about 10 GB, adding roughly $0.15/month. D1 would likely stay within its free 5 GB. Total: **under $1/month**. The free tier still applies — you only pay for the portion above the free allowance, not the full amount.
+
+## Deploy
+
+Click the deploy button above to provision the app on your Cloudflare account. After it finishes, there are three setup steps:
+
+1. **Create the database tables:**
    ```sh
    npx wrangler d1 migrations apply mailstash --remote
    ```
 
-2. **Create R2 API credentials** for presigned uploads:
-   - Go to **R2 > Manage R2 API Tokens** in the Cloudflare dashboard
+2. **Create storage credentials** so the app can upload email files:
+   - In the Cloudflare dashboard, go to **R2 > Manage R2 API Tokens**
    - Create a token with **Object Read & Write** on the `mailstash` bucket
-   - Add the token values as secrets:
+   - Add the credentials as secrets:
      ```sh
      npx wrangler secret put R2_ACCESS_KEY_ID
      npx wrangler secret put R2_SECRET_ACCESS_KEY
      npx wrangler secret put R2_ACCOUNT_ID
      ```
 
-3. **Set up Cloudflare Access** to restrict who can use the app:
+3. **Restrict access** so only you can use the app:
    - Go to [Zero Trust > Access > Applications](https://one.dash.cloudflare.com/access/apps)
-   - Add a Self-hosted Application for your Worker's domain
-   - Configure an identity provider and allowed email addresses
-   - The app will show setup instructions until Access is active
+   - Add a Self-hosted Application for your mailstash domain
+   - Choose how you want to log in (email code, Google, GitHub, etc.) and which email addresses are allowed
+   - The app will guide you through this on first visit
 
-4. **Open the app** and import your first mbox file.
-
-## How it works
-
-Ingestion runs entirely in the browser. The File System Access API streams multi-GB mbox files from disk with constant memory. No CLI, no local credentials, no setup wizard — open the app and pick a file.
-
-**Three-phase pipeline (each independently resumable):**
-
-1. **Parse** — Stream mbox from disk, split on `From ` delimiters, write each email to IndexedDB
-2. **Upload** — PUT `.eml` and attachment blobs directly to R2 via presigned URLs (parallel, bypasses Worker body limits)
-3. **Commit** — Batch metadata to the Worker, which inserts into D1
-
-If the tab crashes, reopen the app — the persisted file handle restores access to the mbox, and IndexedDB has all progress.
+Then open the app and import your first mbox file.
 
 ## Local development
 
 ```sh
 pnpm install
-pnpm dev          # Vite dev server (frontend)
-pnpm dev:worker   # Wrangler dev server (API)
+pnpm dev          # Frontend dev server
+pnpm dev:worker   # API dev server
 pnpm test         # Run tests
-pnpm typecheck    # Type-check both tsconfigs
+pnpm typecheck    # Type-check
 ```
-
-Requires Chrome or Edge (File System Access API). Safari is unsupported.
-
-## Cost
-
-| Component | Free tier | Paid |
-|---|---|---|
-| Workers + Static Assets | 100K req/day | $5/mo |
-| D1 | 5GB, 5M reads/day | $5/mo |
-| R2 | 10GB, no egress fees | $0.015/GB/mo |
-| Access | Free (<50 users) | — |
-
-Expected: **$0–5/month** for a single-user archive.
