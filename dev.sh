@@ -14,8 +14,8 @@ VITE_PORT=$(find_free_port $((WORKER_PORT + 1)))
 
 export WORKER_PORT VITE_PORT
 
-echo "  Worker API → http://localhost:$WORKER_PORT"
-echo "  Frontend   → http://localhost:$VITE_PORT"
+echo ""
+echo "  Open → http://localhost:$VITE_PORT"
 echo ""
 
 cd apps/web
