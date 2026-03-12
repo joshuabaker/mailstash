@@ -7,7 +7,7 @@ Archive your Gmail and keep it searchable — without paying for Google Workspac
 - 📎 **Attachments preserved** — download any file from your archive
 - 🔒 **Private to you** — emails are stored in your own Cloudflare account, not shared with anyone
 - 🔄 **Resumable imports** — close the tab mid-import, pick up right where you left off
-- 💰 **Practically free** — runs on Cloudflare's free tier for most archives
+- 💰 **Practically free** — runs on Cloudflare’s free tier for most archives
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/joshuabaker/mailstash)
 
@@ -25,7 +25,7 @@ Requires Chrome or Edge.
 
 ## Estimated cost
 
-MailStash runs on Cloudflare's infrastructure. Each component has a free tier, and you only pay if you exceed it.
+MailStash runs on Cloudflare’s infrastructure. Each component has a free tier, and you only pay if you exceed it.
 
 | Component | Free allowance | Paid rate above free tier |
 |---|---|---|
@@ -34,11 +34,11 @@ MailStash runs on Cloudflare's infrastructure. Each component has a free tier, a
 | R2 (email files + attachments) | 10 GB storage, no download fees | $0.015/GB/month beyond 10 GB |
 | Access (login protection) | Free for up to 50 users | — |
 
-**A small archive (under 5,000 emails, ~2 GB of files)** fits entirely within the free tier. You'd pay nothing beyond a Cloudflare account.
+**A small archive (under 5,000 emails, ~2 GB of files)** fits entirely within the free tier. You’d pay nothing beyond a Cloudflare account.
 
 **A larger archive (50,000 emails, ~20 GB of files)** would exceed the free R2 storage by about 10 GB, adding roughly $0.15/month. D1 would likely stay within its free 5 GB. Total: **under $1/month**. The free tier still applies — you only pay for the portion above the free allowance, not the full amount.
 
-## Deploy
+## Manual deployment
 
 Click the deploy button above to provision the app on your Cloudflare account. After it finishes, there are three setup steps:
 
@@ -58,7 +58,7 @@ Click the deploy button above to provision the app on your Cloudflare account. A
      ```
 
 3. **Restrict access** so only you can use the app:
-   - Go to [Zero Trust > Access > Applications](https://one.dash.cloudflare.com/access/apps)
+   - Go to [Zero Trust > Access > Applications](https://dash.cloudflare.com/?to=/:account/one)
    - Add a Self-hosted Application for your MailStash domain
    - Choose how you want to log in (email code, Google, GitHub, etc.) and which email addresses are allowed
    - The app will guide you through this on first visit
