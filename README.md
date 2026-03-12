@@ -2,6 +2,13 @@
 
 Archive your Gmail and keep it searchable — without paying for Google Workspace.
 
+- 🔍 **Full-text search** — find any email by sender, date, keyword, or attachment
+- 🧵 **Threaded conversations** — read entire email threads, just like Gmail
+- 📎 **Attachments preserved** — download any file from your archive
+- 🔒 **Private to you** — emails are stored in your own Cloudflare account, not shared with anyone
+- 🔄 **Resumable imports** — close the tab mid-import, pick up right where you left off
+- 💰 **Practically free** — runs on Cloudflare's free tier for most archives
+
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/joshuabaker/mailstash)
 
 ## How it works
