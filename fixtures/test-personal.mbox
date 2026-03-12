@@ -1,0 +1,280 @@
+From alice@example.com Mon Jan 15 10:00:00 2024
+From: Alice Johnson <alice@example.com>
+To: josh@example.com
+Subject: Weekend hiking plans
+Message-ID: <hike-001@example.com>
+Date: Mon, 15 Jan 2024 10:00:00 -0800
+X-Gmail-Labels: Inbox,Important,Friends
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hey Josh,
+
+Are you free this Saturday for a hike? I was thinking we could do the
+Waterfall Trail — it's about 6 miles round trip and the weather looks
+perfect.
+
+Let me know!
+Alice
+
+From josh@example.com Mon Jan 15 14:30:00 2024
+From: Josh Baker <josh@example.com>
+To: alice@example.com
+Subject: Re: Weekend hiking plans
+Message-ID: <hike-002@example.com>
+In-Reply-To: <hike-001@example.com>
+References: <hike-001@example.com>
+Date: Mon, 15 Jan 2024 14:30:00 -0800
+X-Gmail-Labels: Sent
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Sounds great! I've been wanting to do that trail. What time should we
+meet at the trailhead?
+
+I'll bring sandwiches.
+
+Josh
+
+From alice@example.com Tue Jan 16 08:15:00 2024
+From: Alice Johnson <alice@example.com>
+To: josh@example.com
+Subject: Re: Weekend hiking plans
+Message-ID: <hike-003@example.com>
+In-Reply-To: <hike-002@example.com>
+References: <hike-001@example.com> <hike-002@example.com>
+Date: Tue, 16 Jan 2024 08:15:00 -0800
+X-Gmail-Labels: Inbox,Friends
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Let's meet at 8am — want to beat the crowds. I'll bring coffee!
+
+See you Saturday,
+Alice
+
+From newsletters@techdigest.example.com Wed Jan 17 06:00:00 2024
+From: Tech Digest <newsletters@techdigest.example.com>
+To: josh@example.com
+Subject: This Week in Tech: AI breakthroughs and more
+Message-ID: <digest-042@techdigest.example.com>
+Date: Wed, 17 Jan 2024 06:00:00 -0800
+X-Gmail-Labels: Inbox,Newsletters
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="digest-boundary-001"
+
+--digest-boundary-001
+Content-Type: text/plain; charset=utf-8
+
+THIS WEEK IN TECH
+==================
+
+1. New language model benchmarks released
+2. Cloudflare announces Workers improvements
+3. SQLite gets new JSON functions
+
+Read more at techdigest.example.com
+
+--digest-boundary-001
+Content-Type: text/html; charset=utf-8
+
+<html>
+<body style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto;">
+<h1 style="color: #1a1a2e; border-bottom: 2px solid #8b8bff;">This Week in Tech</h1>
+<ol>
+<li><strong>New language model benchmarks released</strong> — Researchers publish comprehensive evals across 15 tasks.</li>
+<li><strong>Cloudflare announces Workers improvements</strong> — D1 gets new indexing features and R2 presigned URL enhancements.</li>
+<li><strong>SQLite gets new JSON functions</strong> — JSON_EACH and JSON_TREE now 3x faster.</li>
+</ol>
+<p style="color: #888; font-size: 12px;">You received this because you subscribed to Tech Digest.</p>
+</body>
+</html>
+
+--digest-boundary-001--
+
+From bob@example.com Thu Jan 18 11:00:00 2024
+From: Bob Martinez <bob@example.com>
+To: josh@example.com
+Subject: Photos from New Year's
+Message-ID: <photos-001@example.com>
+Date: Thu, 18 Jan 2024 11:00:00 -0800
+X-Gmail-Labels: Inbox,Friends
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="photos-boundary-001"
+
+--photos-boundary-001
+Content-Type: text/plain; charset=utf-8
+
+Hey Josh!
+
+Finally got around to sorting through the photos. Attached a couple of
+the best ones.
+
+Bob
+
+--photos-boundary-001
+Content-Type: image/png; name="fireworks.png"
+Content-Disposition: attachment; filename="fireworks.png"
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFAAAAAoCAIAAADmAupWAAAASklEQVR4nO3PAQkAMAzAsAmbfxUX
+cxmHPlABzZzdr5rnB8DAwMDAwMDfBFwPuB5wPeB6wPWA6wHXA64HXA+4HnA94HrA9YDrAde7z8ua
+8ef2K1YAAAAASUVORK5CYII=
+
+--photos-boundary-001
+Content-Type: image/png; name="group_shot.png"
+Content-Disposition: attachment; filename="group_shot.png"
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFAAAAAoCAIAAADmAupWAAAAS0lEQVR4nO3PAQkAIBDAQIMZwrAG
+NIawP1iA3dr3jGp9PwAGBgYGBgYeE3A94HrA9YDrAdcDrgdcD7gecD3gesD1gOsB1wOuB1zvAelo
+oOLhqhuKAAAAAElFTkSuQmCC
+
+--photos-boundary-001--
+
+From josh@example.com Thu Jan 18 15:45:00 2024
+From: Josh Baker <josh@example.com>
+To: bob@example.com
+Subject: Re: Photos from New Year's
+Message-ID: <photos-002@example.com>
+In-Reply-To: <photos-001@example.com>
+References: <photos-001@example.com>
+Date: Thu, 18 Jan 2024 15:45:00 -0800
+X-Gmail-Labels: Sent
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+These are awesome! The fireworks one is going straight to my wallpaper.
+Thanks for sharing.
+
+Josh
+
+From noreply@github.example.com Fri Jan 19 09:00:00 2024
+From: GitHub <noreply@github.example.com>
+To: josh@example.com
+Subject: [mailstash] Issue #12: Add search filters
+Message-ID: <gh-issue-12@github.example.com>
+Date: Fri, 19 Jan 2024 09:00:00 -0800
+X-Gmail-Labels: Inbox,GitHub
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="gh-boundary-001"
+
+--gh-boundary-001
+Content-Type: text/plain; charset=utf-8
+
+New issue opened by @contributor42:
+
+Add search filters for date range, from/to, and attachment filtering.
+
+Currently the search only supports free-text. Users should be able to
+filter by:
+- Date range (after/before)
+- Sender (from:)
+- Recipient (to:)
+- Has attachment (has:attachment)
+
+---
+Reply to this email directly or view it on GitHub.
+
+--gh-boundary-001
+Content-Type: text/html; charset=utf-8
+
+<html>
+<body style="font-family: -apple-system, sans-serif; color: #24292e;">
+<h3><a href="#" style="color: #0366d6;">[mailstash] Issue #12: Add search filters</a></h3>
+<p>New issue opened by <strong>@contributor42</strong>:</p>
+<blockquote style="border-left: 3px solid #dfe2e5; padding-left: 12px; color: #6a737d;">
+<p>Add search filters for date range, from/to, and attachment filtering.</p>
+<p>Currently the search only supports free-text. Users should be able to filter by:</p>
+<ul>
+<li>Date range (after/before)</li>
+<li>Sender (from:)</li>
+<li>Recipient (to:)</li>
+<li>Has attachment (has:attachment)</li>
+</ul>
+</blockquote>
+<hr>
+<p style="font-size: 12px; color: #6a737d;">Reply to this email directly or view it on GitHub.</p>
+</body>
+</html>
+
+--gh-boundary-001--
+
+From alice@example.com Fri Jan 19 17:00:00 2024
+From: Alice Johnson <alice@example.com>
+To: josh@example.com
+Subject: Re: Weekend hiking plans
+Message-ID: <hike-004@example.com>
+In-Reply-To: <hike-003@example.com>
+References: <hike-001@example.com> <hike-002@example.com> <hike-003@example.com>
+Date: Fri, 19 Jan 2024 17:00:00 -0800
+X-Gmail-Labels: Inbox,Friends
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Quick update — trail is open and conditions look great. Weather says
+55F and sunny. See you tomorrow at 8!
+
+From support@cloudstore.example.com Sat Jan 20 10:30:00 2024
+From: CloudStore Support <support@cloudstore.example.com>
+To: josh@example.com
+Subject: Your order #98765 has shipped!
+Message-ID: <order-98765@cloudstore.example.com>
+Date: Sat, 20 Jan 2024 10:30:00 -0800
+X-Gmail-Labels: Inbox,Receipts
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="order-boundary-001"
+
+--order-boundary-001
+Content-Type: text/html; charset=utf-8
+
+<html>
+<body style="font-family: -apple-system, sans-serif; background: #f6f8fa; padding: 20px;">
+<div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 8px; padding: 24px;">
+<h2 style="color: #1a1a2e;">Your order has shipped! 📦</h2>
+<p>Order <strong>#98765</strong> is on its way.</p>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+<tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px 0;">USB-C Hub (7-port)</td><td style="text-align: right;">$34.99</td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px 0;">Shipping</td><td style="text-align: right;">Free</td></tr>
+<tr><td style="padding: 8px 0; font-weight: bold;">Total</td><td style="text-align: right; font-weight: bold;">$34.99</td></tr>
+</table>
+<p style="font-size: 13px; color: #888;">Estimated delivery: Jan 23-25, 2024</p>
+</div>
+</body>
+</html>
+
+--order-boundary-001
+Content-Type: application/pdf; name="invoice-98765.pdf"
+Content-Disposition: attachment; filename="invoice-98765.pdf"
+Content-Transfer-Encoding: base64
+
+JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5k
+b2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4K
+ZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3gg
+WzAgMCA2MTIgNzkyXSA+PgplbmRvYmoKeHJlZgowIDQKMDAwMDAwMDAwMCA2NTUzNSBmIAow
+MDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTggMDAwMDAgbiAKMDAwMDAwMDExNSAwMDAwMCBu
+IAp0cmFpbGVyCjw8IC9TaXplIDQgL1Jvb3QgMSAwIFIgPj4Kc3RhcnR4cmVmCjIwNAolJUVP
+Rgo=
+
+--order-boundary-001--
+
+From josh@example.com Sun Jan 21 20:00:00 2024
+From: Josh Baker <josh@example.com>
+To: alice@example.com, bob@example.com
+Cc: carol@example.com
+Subject: Hike was amazing!
+Message-ID: <hike-recap-001@example.com>
+Date: Sun, 21 Jan 2024 20:00:00 -0800
+X-Gmail-Labels: Sent
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hey everyone,
+
+What an incredible day! The waterfall was flowing hard from all the
+recent rain. Alice's coffee was a lifesaver at 8am.
+
+Bob — wish you could've made it. Next time!
+
+Josh
+

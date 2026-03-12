@@ -1,0 +1,326 @@
+From sarah@acmecorp.example.com Mon Feb 05 09:00:00 2024
+From: Sarah Chen <sarah@acmecorp.example.com>
+To: josh@acmecorp.example.com
+Cc: dev-team@acmecorp.example.com
+Subject: Q1 Architecture Review — proposal attached
+Message-ID: <arch-review-001@acmecorp.example.com>
+Date: Mon, 05 Feb 2024 09:00:00 -0800
+X-Gmail-Labels: Inbox,Work,Important
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="arch-boundary-001"
+
+--arch-boundary-001
+Content-Type: multipart/alternative; boundary="arch-alt-001"
+
+--arch-alt-001
+Content-Type: text/plain; charset=utf-8
+
+Hi Josh,
+
+Attached is the Q1 architecture proposal. Key changes:
+
+1. Migrate auth from JWT to session tokens
+2. Move image processing to a worker queue
+3. Replace Postgres full-text search with a dedicated search service
+
+Can you review before Wednesday's meeting? I'd especially like your
+input on the search migration — you have the most context there.
+
+Thanks,
+Sarah
+
+--arch-alt-001
+Content-Type: text/html; charset=utf-8
+
+<html>
+<body style="font-family: -apple-system, sans-serif; color: #24292e; line-height: 1.6;">
+<p>Hi Josh,</p>
+<p>Attached is the Q1 architecture proposal. Key changes:</p>
+<ol>
+<li><strong>Migrate auth</strong> from JWT to session tokens</li>
+<li><strong>Move image processing</strong> to a worker queue</li>
+<li><strong>Replace Postgres full-text search</strong> with a dedicated search service</li>
+</ol>
+<p>Can you review before Wednesday's meeting? I'd especially like your input on the search migration — you have the most context there.</p>
+<p>Thanks,<br>Sarah</p>
+</body>
+</html>
+
+--arch-alt-001--
+
+--arch-boundary-001
+Content-Type: application/pdf; name="q1-architecture-proposal.pdf"
+Content-Disposition: attachment; filename="q1-architecture-proposal.pdf"
+Content-Transfer-Encoding: base64
+
+JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5k
+b2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4K
+ZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3gg
+WzAgMCA2MTIgNzkyXSA+PgplbmRvYmoKeHJlZgowIDQKMDAwMDAwMDAwMCA2NTUzNSBmIAow
+MDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTggMDAwMDAgbiAKMDAwMDAwMDExNSAwMDAwMCBu
+IAp0cmFpbGVyCjw8IC9TaXplIDQgL1Jvb3QgMSAwIFIgPj4Kc3RhcnR4cmVmCjIwNAolJUVP
+Rgo=
+
+--arch-boundary-001--
+
+From josh@acmecorp.example.com Mon Feb 05 14:20:00 2024
+From: Josh Baker <josh@acmecorp.example.com>
+To: sarah@acmecorp.example.com
+Cc: dev-team@acmecorp.example.com
+Subject: Re: Q1 Architecture Review — proposal attached
+Message-ID: <arch-review-002@acmecorp.example.com>
+In-Reply-To: <arch-review-001@acmecorp.example.com>
+References: <arch-review-001@acmecorp.example.com>
+Date: Mon, 05 Feb 2024 14:20:00 -0800
+X-Gmail-Labels: Sent,Work
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="arch-reply-001"
+
+--arch-reply-001
+Content-Type: text/plain; charset=utf-8
+
+Sarah,
+
+Good proposal overall. A few thoughts:
+
+1. Auth migration: +1 on session tokens. JWTs have been a pain for
+   revocation. Can we keep a 30-day migration window with both?
+
+2. Image processing: Agreed. The current sync approach blocks the
+   request for 2-3 seconds on large uploads.
+
+3. Search: I'd lean toward keeping it in-database for now. Our
+   dataset isn't large enough to justify a separate service. SQLite
+   FTS5 handles our volume easily — I've been benchmarking it for
+   another project and it's surprisingly fast.
+
+Happy to walk through the search parts in more detail Wednesday.
+
+Josh
+
+--arch-reply-001
+Content-Type: text/html; charset=utf-8
+
+<html>
+<body style="font-family: -apple-system, sans-serif; color: #24292e; line-height: 1.6;">
+<p>Sarah,</p>
+<p>Good proposal overall. A few thoughts:</p>
+<ol>
+<li><strong>Auth migration:</strong> +1 on session tokens. JWTs have been a pain for revocation. Can we keep a 30-day migration window with both?</li>
+<li><strong>Image processing:</strong> Agreed. The current sync approach blocks the request for 2-3 seconds on large uploads.</li>
+<li><strong>Search:</strong> I'd lean toward keeping it in-database for now. Our dataset isn't large enough to justify a separate service. SQLite FTS5 handles our volume easily — I've been benchmarking it for another project and it's surprisingly fast.</li>
+</ol>
+<p>Happy to walk through the search parts in more detail Wednesday.</p>
+<p>Josh</p>
+</body>
+</html>
+
+--arch-reply-001--
+
+From sarah@acmecorp.example.com Tue Feb 06 10:45:00 2024
+From: Sarah Chen <sarah@acmecorp.example.com>
+To: josh@acmecorp.example.com
+Cc: dev-team@acmecorp.example.com
+Subject: Re: Q1 Architecture Review — proposal attached
+Message-ID: <arch-review-003@acmecorp.example.com>
+In-Reply-To: <arch-review-002@acmecorp.example.com>
+References: <arch-review-001@acmecorp.example.com> <arch-review-002@acmecorp.example.com>
+Date: Tue, 06 Feb 2024 10:45:00 -0800
+X-Gmail-Labels: Inbox,Work
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Good points all around. I'll update the proposal:
+
+- Auth: 30-day dual support, then hard cutover
+- Search: staying in-database, revisit at 10M rows
+
+Let's hash out the worker queue design Wednesday. I'll send a
+calendar invite.
+
+Sarah
+
+From mike@acmecorp.example.com Wed Feb 07 11:00:00 2024
+From: Mike Torres <mike@acmecorp.example.com>
+To: josh@acmecorp.example.com
+Subject: Bug report: Dashboard charts rendering blank
+Message-ID: <bug-dash-001@acmecorp.example.com>
+Date: Wed, 07 Feb 2024 11:00:00 -0800
+X-Gmail-Labels: Inbox,Work,Bugs
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="bug-boundary-001"
+
+--bug-boundary-001
+Content-Type: multipart/alternative; boundary="bug-alt-001"
+
+--bug-alt-001
+Content-Type: text/plain; charset=utf-8
+
+Hey Josh,
+
+Several users reported the dashboard charts showing blank since this
+morning's deploy. I've attached a screenshot. Looks like the chart
+library isn't getting data — the API returns 200 but the response
+body is empty.
+
+I traced it to the caching layer. The new cache key format from PR
+#247 doesn't match the invalidation pattern.
+
+Quick fix: update the invalidation regex in cache-middleware.ts line 42.
+
+Mike
+
+--bug-alt-001
+Content-Type: text/html; charset=utf-8
+
+<html>
+<body style="font-family: -apple-system, sans-serif; color: #24292e; line-height: 1.6;">
+<p>Hey Josh,</p>
+<p>Several users reported the dashboard charts showing blank since this morning's deploy. I've attached a screenshot:</p>
+<p><img src="cid:screenshot-blank-charts" alt="Blank charts screenshot" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;"></p>
+<p>Looks like the chart library isn't getting data — the API returns 200 but the response body is empty.</p>
+<p>I traced it to the caching layer. The new cache key format from <strong>PR #247</strong> doesn't match the invalidation pattern.</p>
+<p><strong>Quick fix:</strong> update the invalidation regex in <code>cache-middleware.ts</code> line 42.</p>
+<p>Mike</p>
+</body>
+</html>
+
+--bug-alt-001--
+
+--bug-boundary-001
+Content-Type: image/png; name="blank-charts-screenshot.png"
+Content-Disposition: inline; filename="blank-charts-screenshot.png"
+Content-ID: <screenshot-blank-charts>
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFAAAAAoCAIAAADmAupWAAAAS0lEQVR4nO3PAQkAIBDAQIMZx9iG
+MYawP1iA3drnjmp9PwAGBgYGBgYeE3A94HrA9YDrAdcDrgdcD7gecD3gesD1gOsB1wOuB1zvAWai
+jw9HFBWeAAAAAElFTkSuQmCC
+
+--bug-boundary-001--
+
+From josh@acmecorp.example.com Wed Feb 07 11:30:00 2024
+From: Josh Baker <josh@acmecorp.example.com>
+To: mike@acmecorp.example.com
+Subject: Re: Bug report: Dashboard charts rendering blank
+Message-ID: <bug-dash-002@acmecorp.example.com>
+In-Reply-To: <bug-dash-001@acmecorp.example.com>
+References: <bug-dash-001@acmecorp.example.com>
+Date: Wed, 07 Feb 2024 11:30:00 -0800
+X-Gmail-Labels: Sent,Work
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Good catch. Pushed a fix in PR #251 — the regex was anchored to the
+old key format. Added a test to prevent regression.
+
+Deploying now, should be resolved in ~5 minutes.
+
+Josh
+
+From mike@acmecorp.example.com Wed Feb 07 11:45:00 2024
+From: Mike Torres <mike@acmecorp.example.com>
+To: josh@acmecorp.example.com
+Subject: Re: Bug report: Dashboard charts rendering blank
+Message-ID: <bug-dash-003@acmecorp.example.com>
+In-Reply-To: <bug-dash-002@acmecorp.example.com>
+References: <bug-dash-001@acmecorp.example.com> <bug-dash-002@acmecorp.example.com>
+Date: Wed, 07 Feb 2024 11:45:00 -0800
+X-Gmail-Labels: Inbox,Work,Bugs
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Confirmed — charts are back. Thanks for the fast turnaround.
+
+From hr@acmecorp.example.com Thu Feb 08 08:00:00 2024
+From: HR Team <hr@acmecorp.example.com>
+To: all-staff@acmecorp.example.com
+Subject: Company Update: Q1 All-Hands Meeting
+Message-ID: <allhands-q1-001@acmecorp.example.com>
+Date: Thu, 08 Feb 2024 08:00:00 -0800
+X-Gmail-Labels: Inbox,Work,Company
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="allhands-boundary-001"
+
+--allhands-boundary-001
+Content-Type: text/html; charset=utf-8
+
+<html>
+<body style="font-family: -apple-system, sans-serif; color: #24292e; line-height: 1.6;">
+<div style="max-width: 600px; margin: 0 auto;">
+<div style="text-align: center; padding: 20px 0;">
+<img src="cid:company-banner" alt="Acme Corp" style="max-width: 300px;">
+</div>
+<h2 style="color: #1a1a2e;">Q1 All-Hands Meeting</h2>
+<p>Hi everyone,</p>
+<p>Please join us for the quarterly all-hands meeting:</p>
+<table style="width: 100%; margin: 16px 0;">
+<tr><td style="padding: 4px 0; color: #6a737d; width: 80px;">Date</td><td><strong>February 15, 2024</strong></td></tr>
+<tr><td style="padding: 4px 0; color: #6a737d;">Time</td><td><strong>2:00 PM PST</strong></td></tr>
+<tr><td style="padding: 4px 0; color: #6a737d;">Location</td><td><strong>Main conference room + Zoom</strong></td></tr>
+</table>
+<h3 style="color: #1a1a2e;">Agenda</h3>
+<ul>
+<li>CEO keynote — Year in review</li>
+<li>Product roadmap updates</li>
+<li>Engineering team growth plans</li>
+<li>Q&amp;A session</li>
+</ul>
+<p>Zoom link will be sent the morning of the meeting.</p>
+<p style="color: #6a737d; font-size: 13px; margin-top: 24px;">— The HR Team</p>
+</div>
+</body>
+</html>
+
+--allhands-boundary-001
+Content-Type: image/png; name="acme-banner.png"
+Content-Disposition: inline; filename="acme-banner.png"
+Content-ID: <company-banner>
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFAAAAAoCAIAAADmAupWAAAAS0lEQVR4nO3PAQkAIBDAQIMZwrAG
+NIawP1iA3dr3jGp9PwAGBgYGBgYeE3A94HrA9YDrAdcDrgdcD7gecD3gesD1gOsB1wOuB1zvAelo
+oOLhqhuKAAAAAElFTkSuQmCC
+
+--allhands-boundary-001--
+
+From sarah@acmecorp.example.com Fri Feb 09 16:00:00 2024
+From: Sarah Chen <sarah@acmecorp.example.com>
+To: josh@acmecorp.example.com
+Subject: Quick question — D1 batch insert limits?
+Message-ID: <d1-question-001@acmecorp.example.com>
+Date: Fri, 09 Feb 2024 16:00:00 -0800
+X-Gmail-Labels: Inbox,Work
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hey Josh,
+
+You mentioned you've been working with D1 — do you know what the
+batch insert limits are? I need to bulk-load about 50k rows and
+wondering if I should chunk it.
+
+Sarah
+
+From josh@acmecorp.example.com Fri Feb 09 16:30:00 2024
+From: Josh Baker <josh@acmecorp.example.com>
+To: sarah@acmecorp.example.com
+Subject: Re: Quick question — D1 batch insert limits?
+Message-ID: <d1-question-002@acmecorp.example.com>
+In-Reply-To: <d1-question-001@acmecorp.example.com>
+References: <d1-question-001@acmecorp.example.com>
+Date: Fri, 09 Feb 2024 16:30:00 -0800
+X-Gmail-Labels: Sent,Work
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Yeah — DB.batch() can handle up to 100 statements per call. Each
+statement can be a multi-row INSERT but the total payload needs to
+stay under the Worker CPU time limit.
+
+For 50k rows I'd chunk into batches of 50-100 inserts, each inserting
+one row. Wrap each batch in DB.batch() for atomicity. That's what I'm
+doing for mailstash and it works well.
+
+Josh
+
