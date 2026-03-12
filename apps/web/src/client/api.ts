@@ -35,26 +35,6 @@ export async function createAccount(
   });
 }
 
-export async function ingestEmail(
-  accountId: string,
-  rawEmail: string,
-): Promise<{ id: string }> {
-  const res = await fetch(`/api/ingest/${accountId}`, {
-    method: "POST",
-    body: rawEmail,
-  });
-  if (!res.ok) throw new Error(`Ingest failed: ${res.status}`);
-  return res.json();
-}
-
-export async function fetchExistingIds(
-  accountId: string,
-): Promise<Set<string>> {
-  const res = await fetch(`/api/ingest/ids/${accountId}`);
-  const ids: string[] = await res.json();
-  return new Set(ids);
-}
-
 // ── three-phase ingest API ────────────────────────────────────────────────
 
 export interface PresignedUrl {
@@ -75,34 +55,8 @@ export async function requestPresignedUrls(
   return res.json();
 }
 
-export interface BatchIngestAttachment {
-  id: string;
-  filename: string;
-  contentType: string;
-  sizeBytes: number;
-  contentId: string;
-  isInline: number;
-  r2Key: string;
-}
-
-export interface BatchIngestItem {
-  id: string;
-  threadId: string;
-  fromAddress: string;
-  fromName: string;
-  toAddresses: string;
-  ccAddresses: string;
-  subject: string;
-  dateUnix: number;
-  dateIso: string;
-  labels: string;
-  hasAttachments: number;
-  bodyText: string;
-  bodyHtml: string;
-  r2Key: string;
-  inReplyTo: string;
-  attachments: BatchIngestAttachment[];
-}
+export type { BatchIngestAttachment, BatchIngestItem } from "../shared/types.js";
+import type { BatchIngestItem } from "../shared/types.js";
 
 export async function ingestBatch(
   accountId: string,

@@ -6,6 +6,7 @@ import {
   type Account,
   type EmailSummary,
 } from "../api";
+import { parseJsonArray } from "../../shared/email-utils";
 
 function relativeDate(unix: number): string {
   const now = Date.now();
@@ -25,15 +26,6 @@ function relativeDate(unix: number): string {
   return `${month} ${d.getFullYear()}`;
 }
 
-function parseLabels(raw: string): string[] {
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
 export function Mailbox() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [accountId, setAccountId] = useState("");
@@ -43,6 +35,7 @@ export function Mailbox() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const queryInitRef = useRef(true);
 
   useEffect(() => {
     fetchAccounts().then((accs) => {
@@ -78,8 +71,9 @@ export function Mailbox() {
     doSearch(query, accountId, 1, false);
   }, [accountId]);
 
-  // Debounced search on query change
+  // Debounced search on query change (skip initial mount — accountId effect handles it)
   useEffect(() => {
+    if (queryInitRef.current) { queryInitRef.current = false; return; }
     if (!accountId) return;
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
@@ -147,7 +141,7 @@ export function Mailbox() {
               ) : null}
             </span>
             <span className="email-row-meta">
-              {parseLabels(e.labels).map((l) => (
+              {parseJsonArray(e.labels).map((l) => (
                 <span key={l} className="label-tag">
                   {l}
                 </span>

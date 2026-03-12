@@ -14,7 +14,10 @@ export async function generateMessageId(raw: string): Promise<string> {
 }
 
 export function extractGmailLabels(raw: string): string[] {
-  const match = raw.match(/^X-Gmail-Labels:\s*(.+(?:\r?\n[ \t]+.+)*)/m);
+  // Only search headers (before the first blank line) to avoid scanning multi-MB bodies
+  const headerEnd = raw.search(/\r?\n\r?\n/);
+  const headers = headerEnd > -1 ? raw.slice(0, headerEnd) : raw;
+  const match = headers.match(/^X-Gmail-Labels:\s*(.+(?:\r?\n[ \t]+.+)*)/m);
   if (!match) return [];
   const value = match[1].replace(/\r?\n[ \t]+/g, " ").trim();
   return value
@@ -55,4 +58,20 @@ export function attachmentR2Key(
   sanitizedFilename: string,
 ): string {
   return `${accountId}/attachments/${encodeURIComponent(messageId)}/${sanitizedFilename}`;
+}
+
+export function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)} KB`;
+  if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(1)} MB`;
+  return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+}
+
+export function parseJsonArray(raw: string): string[] {
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
 }

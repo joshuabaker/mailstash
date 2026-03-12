@@ -1,7 +1,31 @@
 import { Hono } from "hono";
 import { AwsClient } from "aws4fetch";
-import { processEmail } from "./email-parser.js";
-import type { Bindings, BatchIngestItem } from "./types.js";
+import type { Bindings, BatchIngestItem, AttachmentMeta, EmailMetadata } from "./types.js";
+
+const EMAIL_INSERT_SQL = `INSERT OR IGNORE INTO emails
+  (id, account_id, thread_id, from_address, from_name, to_addresses,
+   cc_addresses, subject, date_unix, date_iso, labels, has_attachments,
+   body_text, body_html, r2_key, in_reply_to)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+const ATTACHMENT_INSERT_SQL = `INSERT OR IGNORE INTO attachments
+  (id, email_id, filename, content_type, size_bytes, content_id, is_inline, r2_key)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+function bindEmailInsert(db: D1Database, m: EmailMetadata) {
+  return db.prepare(EMAIL_INSERT_SQL).bind(
+    m.id, m.accountId, m.threadId, m.fromAddress, m.fromName,
+    m.toAddresses, m.ccAddresses, m.subject, m.dateUnix, m.dateIso,
+    m.labels, m.hasAttachments, m.bodyText, m.bodyHtml, m.r2Key, m.inReplyTo,
+  );
+}
+
+function bindAttachmentInsert(db: D1Database, emailId: string, att: AttachmentMeta) {
+  return db.prepare(ATTACHMENT_INSERT_SQL).bind(
+    att.id, emailId, att.filename, att.contentType,
+    att.sizeBytes, att.contentId, att.isInline, att.r2Key,
+  );
+}
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -66,67 +90,6 @@ app.post("/api/accounts", async (c) => {
 
 // ── ingest ──────────────────────────────────────────────────────────────
 
-app.get("/api/ingest/ids/:accountId", async (c) => {
-  const accountId = c.req.param("accountId");
-  const { results } = await c.env.DB.prepare(
-    "SELECT id FROM emails WHERE account_id = ?",
-  )
-    .bind(accountId)
-    .all();
-  return c.json(results.map((r) => r.id));
-});
-
-app.post("/api/ingest/:accountId", async (c) => {
-  const accountId = c.req.param("accountId");
-  const rawEmail = await c.req.text();
-
-  const processed = await processEmail(rawEmail, accountId);
-  const m = processed.metadata;
-
-  // R2: store raw .eml + attachments
-  await c.env.BUCKET.put(m.r2Key, rawEmail, {
-    httpMetadata: { contentType: "message/rfc822" },
-  });
-
-  for (const [key, content] of processed.attachmentBuffers) {
-    const att = processed.attachments.find((a) => a.r2Key === key);
-    await c.env.BUCKET.put(key, content, {
-      httpMetadata: {
-        contentType: att?.contentType || "application/octet-stream",
-      },
-    });
-  }
-
-  // D1: batch insert email + attachments
-  const stmts = [
-    c.env.DB.prepare(
-      `INSERT OR IGNORE INTO emails
-       (id, account_id, thread_id, from_address, from_name, to_addresses,
-        cc_addresses, subject, date_unix, date_iso, labels, has_attachments,
-        body_text, body_html, r2_key, in_reply_to)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    ).bind(
-      m.id, m.accountId, m.threadId, m.fromAddress, m.fromName,
-      m.toAddresses, m.ccAddresses, m.subject, m.dateUnix, m.dateIso,
-      m.labels, m.hasAttachments, m.bodyText, m.bodyHtml, m.r2Key, m.inReplyTo,
-    ),
-    ...processed.attachments.map((att) =>
-      c.env.DB.prepare(
-        `INSERT OR IGNORE INTO attachments
-         (id, email_id, filename, content_type, size_bytes, content_id, is_inline, r2_key)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      ).bind(
-        att.id, att.emailId, att.filename, att.contentType,
-        att.sizeBytes, att.contentId, att.isInline, att.r2Key,
-      ),
-    ),
-  ];
-
-  await c.env.DB.batch(stmts);
-
-  return c.json({ id: m.id });
-});
-
 // ── presigned URLs for R2 direct upload ──────────────────────────────
 
 app.post("/api/ingest/presign/:accountId", async (c) => {
@@ -179,31 +142,12 @@ app.post("/api/ingest/batch/:accountId", async (c) => {
   const stmts: D1PreparedStatement[] = [];
 
   for (const m of emails) {
-    stmts.push(
-      c.env.DB.prepare(
-        `INSERT OR IGNORE INTO emails
-         (id, account_id, thread_id, from_address, from_name, to_addresses,
-          cc_addresses, subject, date_unix, date_iso, labels, has_attachments,
-          body_text, body_html, r2_key, in_reply_to)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      ).bind(
-        m.id, accountId, m.threadId, m.fromAddress, m.fromName,
-        m.toAddresses, m.ccAddresses, m.subject, m.dateUnix, m.dateIso,
-        m.labels, m.hasAttachments, m.bodyText, m.bodyHtml, m.r2Key, m.inReplyTo,
-      ),
-    );
+    const meta = { ...m, accountId } as unknown as EmailMetadata;
+    stmts.push(bindEmailInsert(c.env.DB, meta));
 
     for (const att of m.attachments) {
-      stmts.push(
-        c.env.DB.prepare(
-          `INSERT OR IGNORE INTO attachments
-           (id, email_id, filename, content_type, size_bytes, content_id, is_inline, r2_key)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        ).bind(
-          att.id, m.id, att.filename, att.contentType,
-          att.sizeBytes, att.contentId, att.isInline, att.r2Key,
-        ),
-      );
+      const attMeta = { ...att, emailId: m.id } as unknown as AttachmentMeta;
+      stmts.push(bindAttachmentInsert(c.env.DB, m.id, attMeta));
     }
   }
 

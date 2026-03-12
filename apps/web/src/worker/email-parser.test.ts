@@ -1,13 +1,14 @@
 import { describe, it, expect } from "vitest";
+import { processEmail } from "./email-parser";
 import {
   normalizeMessageId,
   extractGmailLabels,
   computeThreadId,
   sanitizeFilename,
   generateMessageId,
-  processEmail,
-} from "./email-parser";
-import { emailR2Key, attachmentR2Key } from "../shared/email-utils";
+  emailR2Key,
+  attachmentR2Key,
+} from "../shared/email-utils";
 
 // ── normalizeMessageId ───────────────────────────────────────────────
 

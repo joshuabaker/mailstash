@@ -10,14 +10,6 @@ import {
   attachmentR2Key,
 } from "../shared/email-utils.js";
 
-export {
-  normalizeMessageId,
-  generateMessageId,
-  extractGmailLabels,
-  computeThreadId,
-  sanitizeFilename,
-};
-
 export async function processEmail(
   rawEmail: string,
   accountId: string,

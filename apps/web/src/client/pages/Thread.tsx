@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { navigate } from "../router";
 import { fetchThread, type EmailDetail, type AttachmentMeta } from "../api";
+import { formatBytes, parseJsonArray } from "../../shared/email-utils";
 
 function formatDate(unix: number): string {
   return new Date(unix * 1000).toLocaleString("en", {
@@ -11,21 +12,6 @@ function formatDate(unix: number): string {
     hour: "numeric",
     minute: "2-digit",
   });
-}
-
-function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function parseList(raw: string): string[] {
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
 }
 
 function rewriteCidUrls(html: string, emailId: string): string {
@@ -60,10 +46,11 @@ function EmailBodyFrame({ html, emailId }: { html: string; emailId: string }) {
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe) return;
+    let observer: MutationObserver | null = null;
     const onLoad = () => {
       resize();
       // Watch for delayed image loads
-      const observer = new MutationObserver(resize);
+      observer = new MutationObserver(resize);
       if (iframe.contentDocument?.body) {
         observer.observe(iframe.contentDocument.body, {
           childList: true,
@@ -73,7 +60,10 @@ function EmailBodyFrame({ html, emailId }: { html: string; emailId: string }) {
       }
     };
     iframe.addEventListener("load", onLoad);
-    return () => iframe.removeEventListener("load", onLoad);
+    return () => {
+      iframe.removeEventListener("load", onLoad);
+      observer?.disconnect();
+    };
   }, [resize]);
 
   return (
@@ -100,7 +90,7 @@ function AttachmentList({ attachments }: { attachments: AttachmentMeta[] }) {
           download={a.filename}
         >
           {a.filename}
-          <span className="attachment-size">{formatSize(a.size_bytes)}</span>
+          <span className="attachment-size">{formatBytes(a.size_bytes)}</span>
         </a>
       ))}
     </div>
@@ -116,8 +106,8 @@ function EmailCard({
 }) {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
-  const toList = parseList(email.to_addresses);
-  const ccList = parseList(email.cc_addresses);
+  const toList = parseJsonArray(email.to_addresses);
+  const ccList = parseJsonArray(email.cc_addresses);
 
   if (!expanded) {
     const snippet = email.body_text
