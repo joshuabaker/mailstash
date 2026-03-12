@@ -80,11 +80,11 @@ export function Import({ onAccountCreated }: { onAccountCreated?: () => void } =
   async function handleCreateAccount(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    const id = (form.get("id") as string).trim();
     const name = (form.get("name") as string).trim();
     const email = (form.get("email") as string).trim();
-    if (!id || !name) return;
+    if (!name) return;
 
+    const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     await createAccount(id, name, email);
     onAccountCreated?.();
     const updated = await fetchAccounts();
@@ -470,11 +470,7 @@ export function Import({ onAccountCreated }: { onAccountCreated?: () => void } =
           ) : (
             <form onSubmit={handleCreateAccount} className="mt-2">
               <div className="field">
-                <label>ID (short name)</label>
-                <input name="id" placeholder="personal" required />
-              </div>
-              <div className="field">
-                <label>Display name</label>
+                <label>Name</label>
                 <input name="name" placeholder="Personal Gmail" required />
               </div>
               <div className="field">
