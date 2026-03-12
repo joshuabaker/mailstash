@@ -1,4 +1,4 @@
-# mailstash
+# MailStash
 
 Personal email archive tool. Ingests Google Takeout mbox exports into Cloudflare infrastructure (D1 + R2) and serves a read-only web viewer.
 

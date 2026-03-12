@@ -1,4 +1,4 @@
-# mailstash
+# MailStash
 
 Archive your Gmail and keep it searchable — without paying for Google Workspace.
 
@@ -13,9 +13,9 @@ Archive your Gmail and keep it searchable — without paying for Google Workspac
 
 ## How it works
 
-Export your email from Google using [Google Takeout](https://takeout.google.com/) (select Gmail, choose `.mbox` format). Then open mailstash in your browser and pick the file.
+Export your email from Google using [Google Takeout](https://takeout.google.com/) (select Gmail, choose `.mbox` format). Then open MailStash in your browser and pick the file.
 
-mailstash reads the file directly from your computer — even multi-gigabyte archives — and uploads everything to your own Cloudflare account. Your emails are stored privately in your account, not shared with any third party.
+MailStash reads the file directly from your computer — even multi-gigabyte archives — and uploads everything to your own Cloudflare account. Your emails are stored privately in your account, not shared with any third party.
 
 The import is resumable. If you close the tab or lose your connection, just reopen the app and it picks up where it left off.
 
@@ -25,7 +25,7 @@ Requires Chrome or Edge.
 
 ## Estimated cost
 
-mailstash runs on Cloudflare's infrastructure. Each component has a free tier, and you only pay if you exceed it.
+MailStash runs on Cloudflare's infrastructure. Each component has a free tier, and you only pay if you exceed it.
 
 | Component | Free allowance | Paid rate above free tier |
 |---|---|---|
@@ -59,7 +59,7 @@ Click the deploy button above to provision the app on your Cloudflare account. A
 
 3. **Restrict access** so only you can use the app:
    - Go to [Zero Trust > Access > Applications](https://one.dash.cloudflare.com/access/apps)
-   - Add a Self-hosted Application for your mailstash domain
+   - Add a Self-hosted Application for your MailStash domain
    - Choose how you want to log in (email code, Google, GitHub, etc.) and which email addresses are allowed
    - The app will guide you through this on first visit
 
