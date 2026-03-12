@@ -19,6 +19,7 @@ echo "  Open → http://localhost:$VITE_PORT"
 echo ""
 
 cd apps/web
+mkdir -p dist/client
 
 exec pnpm exec concurrently -n worker,vite -c blue,green --kill-others \
   "pnpm exec wrangler dev --var DEV_MODE:true --port $WORKER_PORT" \
