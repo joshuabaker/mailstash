@@ -4,20 +4,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "dev": "vite",
+    "dev:worker": "wrangler dev",
+    "build": "vite build",
+    "preview": "vite build && wrangler dev",
+    "deploy": "vite build && wrangler deploy",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.worker.json --noEmit"
   },
   "dependencies": {
+    "aws4fetch": "^1.0.20",
     "hono": "^4.7.4",
+    "postal-mime": "^2.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "typescript": "^5.7.3",
+    "vite": "^6.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "wrangler": "^3.109.2",
     "@cloudflare/workers-types": "^4.20250214.0",
-    "esbuild": "^0.25.0",
     "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4"
+    "@types/react-dom": "^19.0.4",
+    "vitest": "^3.0.0",
+    "@cloudflare/vitest-pool-workers": "^0.8.0"
   }
 }

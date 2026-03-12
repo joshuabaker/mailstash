@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "ingest": "pnpm --filter @mailstash/cli ingest"
+    "dev": "pnpm --filter @mailstash/web dev",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
     "typescript": "^5.7.3"

@@ -7,7 +7,23 @@
       "Bash(node --version && pnpm --version)",
       "Bash(pnpm install:*)",
       "Bash(pnpm --filter @mailstash/cli exec tsx src/ingest.ts --account test --mbox test.mbox)",
-      "Bash(pnpm -r exec tsc --noEmit 2>&1)"
+      "Bash(pnpm -r exec tsc --noEmit 2>&1)",
+      "Bash(pnpm --filter @mailstash/cli exec tsc --noEmit 2>&1)",
+      "Bash(pnpm --filter @mailstash/cli exec tsx src/ingest.ts -- --help 2>&1)",
+      "Bash(pnpm --filter @mailstash/cli exec tsx src/ingest.ts --help 2>&1)",
+      "Bash(pnpm --filter @mailstash/cli exec tsx src/ingest.ts ingest --help 2>&1)",
+      "Bash(pnpm --filter @mailstash/cli exec tsx src/ingest.ts ingest --account test --mbox /tmp/test-mailstash.mbox --dry-run 2>&1)",
+      "Bash(pnpm --filter @mailstash/cli exec tsx src/ingest.ts --account test --mbox /tmp/test-mailstash.mbox --dry-run 2>&1)",
+      "Bash(echo \"\" | timeout 2 pnpm --filter @mailstash/cli exec tsx src/ingest.ts --mbox /tmp/test-mailstash.mbox --dry-run 2>&1 || true)",
+      "Bash(echo \"\" | gtimeout 2 pnpm --filter @mailstash/cli exec tsx src/ingest.ts --mbox /tmp/test-mailstash.mbox --dry-run 2>&1 || true)",
+      "Bash(echo \"\" | pnpm --filter @mailstash/cli exec tsx src/ingest.ts --mbox /tmp/test-mailstash.mbox --dry-run 2>&1 || true)",
+      "Bash(pnpm --filter @mailstash/web exec tsc --noEmit 2>&1)",
+      "Bash(pnpm approve-builds:*)",
+      "Bash(pnpm config:*)",
+      "Bash(pnpm rebuild:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)"
     ]
   }
 }

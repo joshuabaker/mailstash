@@ -1,2 +1,6 @@
 packages:
-  - "apps/*"
+  - apps/*
+
+enableScripts: true
+
+onlyBuiltDependencies: esbuild,workerd
